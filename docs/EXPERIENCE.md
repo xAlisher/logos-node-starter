@@ -118,7 +118,7 @@ actual play-by-play, including what bit us. The polished steps live in the other
 ### Tailscale phone access (done early, in parallel) — a real gotcha worth teaching
 - Goal: get Dariy's phone onto the family tailnet so he can open the dashboard later.
 - **Trap we hit:** signing the Tailscale app into a *fresh* Google account
-  (`a brand-new personal Google account`) does NOT join an existing tailnet — Tailscale silently creates a
+  (a brand-new personal Google account) does NOT join an existing tailnet — Tailscale silently creates a
   brand-new **separate** tailnet owned by that account. The phone showed "VPN on" and looked
   connected, but it was sitting on its own empty tailnet. From Wild, `tailscale status` showed
   nothing new, and the netmap's user list only knew the two existing accounts.
@@ -131,7 +131,7 @@ actual play-by-play, including what bit us. The polished steps live in the other
   tailscale status --json | python3 -c "import json,sys; \
     [print(v['LoginName']) for v in json.load(sys.stdin)['User'].values()]"
   ```
-  Once `a brand-new personal Google account` appeared in that user list and `iphone-11-pro-max  redacted@`
+  Once his account appeared in that user list and `iphone-11-pro-max  <his-account>@`
   showed up in `tailscale status`, he was truly in.
 - Lesson for the tutorial: **"VPN on" ≠ "on the right tailnet."** Always confirm the account
   shows up as a tailnet member from a second device, not just by trusting the phone's toggle.
