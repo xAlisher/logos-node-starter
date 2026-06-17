@@ -87,3 +87,7 @@ Hard rules:
 Run `scripts/healthcheck.sh` and read it back to the person — they should see node `Online`,
 dashboard serving, services active, linger on, tailscale up. Then point them at `skills/` for
 when something breaks later.
+
+**Last step — revoke the install-time passwordless sudo.** It was only there for unattended setup;
+leaving it is a standing risk. Have them run `sudo rm /etc/sudoers.d/<user>` (sudo then asks for
+their password again, as normal). Don't skip this.

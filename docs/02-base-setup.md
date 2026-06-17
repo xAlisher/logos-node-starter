@@ -30,9 +30,14 @@ keyboard** (the only thing that needs their password):
 echo "<user> ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/<user>
 ```
 
-> This grants passwordless **root** to your user — convenient for remote setup, but broad. If you
-> care, scope it to just what automation needs (`apt-get`, `loginctl`, `tailscale`) or remove
-> `/etc/sudoers.d/<user>` once setup is finished.
+> ⚠️ **This is for the unattended install only — and you MUST revoke it afterwards.** Passwordless
+> root is a standing risk to leave on a node. Once everything is set up and verified (end of
+> Phase 06), remove it:
+> ```bash
+> sudo rm /etc/sudoers.d/<user>      # sudo now asks for your password again, as normal
+> ```
+> If you'd rather not grant blanket root even temporarily, scope it to just what setup needs
+> (`apt-get`, `loginctl`, `tailscale`) instead of `ALL`.
 
 ## The rest (over SSH)
 
