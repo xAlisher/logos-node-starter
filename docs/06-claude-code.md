@@ -3,6 +3,11 @@
 **Why:** put an AI agent *on the box itself*, primed with this node's exact setup, so the operator
 can troubleshoot by asking questions in plain language — the "the server helps fix itself" part.
 
+> This guide uses **Claude Code**, but any comparable coding agent works — **local** (e.g. an
+> Ollama/llama.cpp-backed CLI agent) or **cloud**. The only thing that matters is that it can read
+> this repo's [`CLAUDE.md`](../CLAUDE.md) + [`skills/`](../skills/) for context. Adapt the install
+> step below to your agent of choice.
+
 ## 1. Install (mentor, over SSH)
 
 The native installer needs no Node.js:

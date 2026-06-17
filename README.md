@@ -25,7 +25,9 @@ feedback is how the guide gets smoother for the next person.
 >       passwords. No keys yet? `ssh-keygen -t ed25519`, then add the `.pub` to GitHub → SSH keys.
 > - [ ] **A Tailscale account** (Google/Apple/GitHub login is fine), *or* an invite to someone's
 >       existing tailnet — for remote + phone access.
-> - [ ] **An Anthropic account** *(optional)* — only if you want Claude Code on the box (Phase 06).
+> - [ ] **An on-box AI helper** *(optional)* — an Anthropic account for **Claude Code** (Phase 06),
+>       *or any comparable coding agent, local or cloud,* that can read this repo's `CLAUDE.md` +
+>       `skills/`. Only if you want the machine to help troubleshoot itself.
 > - [ ] **About one evening**, and the OK to **erase whatever is currently on the machine**.
 
 Full details in [`docs/00-before-you-start.md`](docs/00-before-you-start.md).
@@ -35,8 +37,8 @@ Full details in [`docs/00-before-you-start.md`](docs/00-before-you-start.md).
 - A minimal headless **Ubuntu Server** box, reachable by SSH.
 - A **Logos node** under systemd (survives reboots), synced and Online.
 - A **dashboard** of node status, served privately to your **phone** over Tailscale.
-- Optionally, **Claude Code on the box itself**, primed with this node's setup so it can help you
-  troubleshoot in plain language.
+- Optionally, an **on-box AI helper** (Claude Code, or any comparable local/cloud agent), primed
+  with this node's setup so it can help you troubleshoot in plain language.
 
 ## Dependencies
 
