@@ -18,8 +18,8 @@ curl -s http://127.0.0.1:8090/ | grep -i '<title>'      # → "Logos Node Status
 curl -s http://127.0.0.1:8090/api/status                # → live node info (proxied)
 ```
 
-Key env in the unit: `HOST=0.0.0.0`, `PORT=8090`, `ZONE_CHANNEL=<operator>`,
-`NODE_LOG_DIR=%h/logos-blockchain-runbook` (where this config writes logs).
+Key env in the unit: `HOST=127.0.0.1` (tailscale serve proxies from localhost — no need to bind
+0.0.0.0), `PORT=8090`, `ZONE_CHANNEL=<your handle>`, `NODE_LOG_DIR=%h/logos-blockchain-runbook`.
 
 ## 2. Publish it to the tailnet (private)
 

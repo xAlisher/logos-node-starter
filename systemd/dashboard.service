@@ -1,6 +1,7 @@
 # User service: ~/.config/systemd/user/dashboard.service
 # Enable with:  systemctl --user enable --now dashboard
-# Serves on 0.0.0.0:8090; expose to your phone with: tailscale serve --bg 8090
+# Serves on 127.0.0.1:8090; expose to your phone with: sudo tailscale serve --bg 8090
+# (tailscale serve proxies from localhost, so the dashboard need not bind to 0.0.0.0)
 [Unit]
 Description=Logos Node Dashboard
 After=network-online.target logos-node.service
@@ -9,10 +10,10 @@ Wants=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=%h/logos-blockchain-runbook
-Environment=HOST=0.0.0.0
+Environment=HOST=127.0.0.1
 Environment=PORT=8090
-# ZONE_CHANNEL: the operator's own zone channel name (his handle on the network)
-Environment=ZONE_CHANNEL=optiplex
+# ZONE_CHANNEL: set to the OPERATOR'S own handle on the network (change this).
+Environment=ZONE_CHANNEL=changeme
 # Wallet key is auto-derived from configs/live/node.yaml (funding_pk) by dashboard/run.sh
 ExecStart=%h/logos-blockchain-runbook/dashboard/run.sh
 Restart=always

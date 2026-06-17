@@ -30,12 +30,16 @@ keyboard** (the only thing that needs their password):
 echo "<user> ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/<user>
 ```
 
+> This grants passwordless **root** to your user — convenient for remote setup, but broad. If you
+> care, scope it to just what automation needs (`apt-get`, `loginctl`, `tailscale`) or remove
+> `/etc/sudoers.d/<user>` once setup is finished.
+
 ## The rest (over SSH)
 
 ```bash
 sudo timedatectl set-timezone Europe/Madrid          # your zone
 sudo apt-get update && sudo apt-get upgrade -y
-sudo apt-get install -y tmux git curl python3 python3-venv
+sudo apt-get install -y tmux git curl python3   # dashboard is pure-stdlib; no venv/pip needed
 hostnamectl                                          # confirm hostname == optiplex
 ```
 

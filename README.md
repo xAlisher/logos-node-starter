@@ -121,7 +121,9 @@ trusted synced node). Everything else went smoothly.
 
 - **Trust:** the snapshot is checksum-verified for **integrity** (exact bytes we published), but a
   checksum can't prove it's the *canonical* chain — you're trusting that we keep the source node on
-  it. Prefer your own trusted node's state if you have one.
+  it. The checksum lives in the same release as the snapshot, so it guards against corruption, not a
+  compromised release host — a planned hardening is to **sign** it with a public key shipped in this
+  repo. Prefer your own trusted node's state if you have one.
 - **Freshness:** it's a point-in-time copy; a restoring node catches the remaining gap via normal
   live gossip (only *bulk* from-scratch sync is the broken part). Maintainers refresh it with
   `scripts/publish-snapshot.sh`.

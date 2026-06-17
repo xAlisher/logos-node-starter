@@ -23,10 +23,12 @@ curl -s http://127.0.0.1:8080/cryptarchia/info    # expect HTTP 200, height risi
 # Service state
 systemctl --user status logos-node dashboard
 
-# THE LOGS ARE FILE-ONLY. node.yaml sets stdout/stderr false, so journalctl shows
-# only systemd restart lines — the real panic is in the state log dir:
-ls -t ~/logos-blockchain-runbook/state/live-v0.1.2/logs/ | head
-tail -f ~/logos-blockchain-runbook/state/live-v0.1.2/logs/$(ls -t ~/logos-blockchain-runbook/state/live-v0.1.2/logs/ | head -1)
+# Logs: this kit's init-generated node.yaml logs to STDOUT, so journald has them:
+journalctl --user -u logos-node -f
+# LAYOUT NOTE: the bundled skills/ were written for the reference machine "Sneg", whose
+# config was file-only with chain state under state/live-v0.1.2/. On THIS box state is
+# ./state and the recovery snapshot is state/recovery/consensus/chain_service.json —
+# translate the skills' state/live-v0.1.2/... paths to state/... accordingly.
 ```
 
 ## Known failure modes (recipes in `skills/`)

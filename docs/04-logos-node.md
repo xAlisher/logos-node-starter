@@ -39,7 +39,7 @@ The binary generates a fresh config with brand-new keys — its own `node_key`, 
      /ip4/65.109.51.37/udp/3001/quic-v1/p2p/12D3KooWJRGau8M1rjT7R5e4YYsgdFhsMX35nRDtMwCDjxQkXAHz \
      /ip4/65.109.51.37/udp/3002/quic-v1/p2p/12D3KooWQXJavMDTRscjauFSgVAB1VLB6Rzpy2uY5SU9Tk7927tb \
      /ip4/65.109.51.37/udp/3003/quic-v1/p2p/12D3KooWSQc7CcGtvWDPF1yCbBthFnQjprfCVHmfmNDUrSmqQsU1 \
-  -o configs/live/node.yaml --http-addr 0.0.0.0:8080
+  -o configs/live/node.yaml --http-addr 127.0.0.1:8080
 ./artifacts/node/logos-blockchain-node --check-config configs/live/node.yaml   # → "Configs are valid!"
 ```
 
@@ -68,30 +68,40 @@ blocks) IBD from the public bootstrap host is **unreliable**: it serves a chunk,
 AllPeersFailed`, then crash-loops (each restart re-replays all stored blocks). We confirmed this is
 not fixed merely by adding one more peer.
 
-**The reliable fix: copy the synced chain DB from a healthy node** (only valid if it's on the
-canonical chain). You copy *chain data*, but keep *your own* `node.yaml` (your own `node_key`), so
-there's no p2p identity collision:
+**Recommended fix — install a synced chain snapshot (one command):**
 
 ```bash
-# stop both nodes for a consistent RocksDB snapshot
-ssh <synced-node> 'systemctl --user stop logos-node'
-systemctl --user stop logos-node            # on the new node
-rm -rf ~/logos-blockchain-runbook/state/* ~/logos-blockchain-runbook/db/*
-
-# stream chain data node-to-node (skip logs + backups). Mind the base_folder mapping:
-#   source uses base_folder ./state/live-v0.1.2 ; this node uses ./state
-ssh <synced-node> 'cd ~/logos-blockchain-runbook/state/live-v0.1.2 && tar c --exclude=logs --exclude="*.bak*" .' \
-  | (cd ~/logos-blockchain-runbook/state && tar x)
-
-ssh <synced-node> 'systemctl --user start logos-node'   # restart the donor immediately
-systemctl --user start logos-node                       # start ours
+systemctl --user stop logos-node
+~/logos-node-starter/scripts/fetch-snapshot.sh    # downloads, checksum-verifies, installs into state/
+systemctl --user start logos-node
 ```
 
-Only `db/` + `recovery/` are needed (~600 MB); the recovery snapshot lets the node **jump straight
-to the tip** — Online in seconds, no full replay. A wallet-key mismatch in the copied state is
-harmless; the node syncs regardless.
+The recovery snapshot lets the node **jump straight to the tip — Online in seconds**, then it tracks
+the live tip via normal gossip. (Read the README's trust/freshness note on what you're trusting.)
 
-> No healthy node to copy from? You're stuck with public IBD — add several *diverse,
+**Alternative — copy from your OWN trusted synced node** (only if you already run one on the
+canonical chain). Copy *chain data* but keep *your own* `node.yaml`/`node_key` (no identity
+collision). ⚠️ **this erases your current chain state:**
+
+```bash
+ssh <your-synced-node> 'systemctl --user stop logos-node'
+systemctl --user stop logos-node
+rm -rf ~/logos-blockchain-runbook/state/db ~/logos-blockchain-runbook/state/recovery   # only chain data
+
+# stream db+recovery node-to-node, skipping logs/backups:
+ssh <your-synced-node> 'cd ~/logos-blockchain-runbook/state/<donor-base> && tar c --exclude=logs --exclude="*.bak*" db recovery' \
+  | (cd ~/logos-blockchain-runbook/state && tar x)
+
+ssh <your-synced-node> 'systemctl --user start logos-node'   # restart the donor immediately
+systemctl --user start logos-node
+```
+
+`<donor-base>` is the donor's state `base_folder` (`.` if it uses `./state`; `live-v0.1.2` on older
+nodes). **A node from this guide uses `./state`** — so its db/recovery live at `state/db` and
+`state/recovery`. Only `db/` + `recovery/` are needed (~600 MB); a wallet-key mismatch in copied
+state is harmless — the node syncs regardless.
+
+> No trusted node and the snapshot won't do? You're left with public IBD — add several *diverse,
 > currently-active* peers (not all one host) and expect a slow, flaky first sync.
 
 ## 5. Verify

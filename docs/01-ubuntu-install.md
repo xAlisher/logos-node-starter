@@ -42,9 +42,12 @@ Leave it on **DHCP** over the Ethernet cable. The installer shows the IP it got
 ## 7. SSH — the key step
 
 - Check **"Install OpenSSH server."**
-- Check **"Import SSH identity" → GitHub →** enter the GitHub username whose keys should have
-  access (here: `xAlisher`). This copies those public keys onto the box automatically.
-- "Allow password authentication over SSH?" → **Yes** (safety net while learning; tighten later).
+- Check **"Import SSH identity" → GitHub →** enter **`<your-github-username>`** — the GitHub account
+  whose SSH keys may log in. ⚠️ **Use YOUR own username:** whoever owns those keys gets SSH access to
+  this box. *(In the original build the mentor's `xAlisher` keys were imported on purpose, so he
+  could set the node up remotely — don't copy that literally unless you want him to have access.)*
+- "Allow password authentication over SSH?" → **No** (your imported keys already work; key-only is
+  safer, especially on a shared tailnet). Pick Yes only if you want a fallback, and disable it later.
 
 ## 8. Snaps
 
