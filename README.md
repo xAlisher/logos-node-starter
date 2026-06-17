@@ -60,6 +60,20 @@ repo and say *"walk me through setting up my Logos node, one step at a time."*
 > one, expect a slow, flaky first sync. Everything else went smoothly — see
 > [`docs/EXPERIENCE.md`](docs/EXPERIENCE.md).
 
+## About the chain snapshot (trust & freshness)
+
+`fetch-snapshot.sh` is what makes a first sync painless, but know what you're accepting:
+
+- **Trust:** you're trusting that this snapshot is the *canonical* chain (it's checksum-verified
+  for **integrity** — i.e. it's the exact bytes we published — but a checksum can't prove it's the
+  right chain). It's produced from a node we keep on the canonical testnet. If you'd rather trust
+  nothing, you can attempt a from-scratch sync instead — but on this testnet that's currently
+  unreliable (see `docs/04`). If you have your *own* trusted synced node, copy its state instead.
+- **Freshness:** the snapshot is a point-in-time copy. A node restoring from it catches the
+  remaining gap via normal live gossip (which works fine — only *bulk* from-scratch sync is the
+  problem). It's republished on a schedule; if it's ever weeks stale the catch-up just takes a bit
+  longer. Maintainers refresh it with `scripts/publish-snapshot.sh`.
+
 ## The self-troubleshooting kit
 
 [`skills/`](skills/) holds battle-tested recipes for the failure modes this node actually hits
