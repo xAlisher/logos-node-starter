@@ -1,0 +1,17 @@
+# User service: ~/.config/systemd/user/logos-node.service
+# Enable with:  systemctl --user enable --now logos-node
+# REQUIRES linger so it survives logout:  sudo loginctl enable-linger $USER
+[Unit]
+Description=Logos Blockchain Node
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/logos-blockchain-runbook
+ExecStart=%h/logos-blockchain-runbook/run-node.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
