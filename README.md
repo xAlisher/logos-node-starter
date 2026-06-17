@@ -53,7 +53,7 @@ You install these along the way (the guide and scripts handle each):
 | **logos-node-dashboard** | the node + dashboard code (the "runbook") | `docs/04` |
 | **logos-blockchain-node + ZK circuits** | the node binary + proving circuits (official Logos release, checksum-verified) | `scripts/fetch-artifacts.sh` |
 | **systemd (user services) + linger** | keep node & dashboard running across reboots | `docs/04`, `docs/05` |
-| **Claude Code** *(optional)* | on-box troubleshooting agent | `docs/06` |
+| **Claude Code or any other matching agent** *(optional)* | on-box troubleshooting agent | `docs/06` |
 
 ## Hardware target
 
