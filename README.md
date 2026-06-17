@@ -4,7 +4,7 @@ A reproducible, beginner-friendly guide to running a **Logos blockchain node + d
 on a cheap second-hand x86 PC, accessible from your phone over Tailscale — and with
 **Claude Code installed on the box itself** so you can troubleshoot the node by talking to an agent.
 
-> Born from a real experiment: a 15-year-old setting up his first server (a Dell Optiplex 3050,
+> Born from a real experiment: a 14-year-old setting up his first server (a Dell Optiplex 3050,
 > i5-7500, 8 GB RAM, 500 GB SSD) with agent guidance. See [`docs/EXPERIENCE.md`](docs/EXPERIENCE.md)
 > for the honest play-by-play — what worked, what bit us, and how long it took.
 

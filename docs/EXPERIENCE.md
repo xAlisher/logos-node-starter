@@ -5,7 +5,7 @@ actual play-by-play, including what bit us. The polished steps live in the other
 
 ## Who & what
 
-- **Operator:** a 15-year-old, first server build, guided by a Claude Code agent.
+- **Operator:** a 14-year-old, first server build, guided by a Claude Code agent.
 - **Machine:** Dell Optiplex 3050 (SFF) — i5-7500 @ 3.4 GHz, 8 GB RAM, 500 GB SSD. Came with
   a licensed Windows 10 (wiped). Boots fast, healthy diagnostics, minor case scratches.
 - **Goal:** a Logos node + dashboard, reachable from his phone, that he can troubleshoot with
