@@ -36,6 +36,10 @@ tail -f ~/logos-blockchain-runbook/state/live-v0.1.2/logs/$(ls -t ~/logos-blockc
   snapshot. See [`skills/logos-node-crash-loop-tip-lib.md`](skills/logos-node-crash-loop-tip-lib.md).
   The launcher should self-heal this — see [`skills/logos-node-auto-rollback-guard.md`](skills/logos-node-auto-rollback-guard.md).
 - **General recovery procedure** → [`skills/logos-node-recovery.md`](skills/logos-node-recovery.md).
+- **Fresh node won't sync / `AllPeersFailed` crash loop** → don't fight IBD; copy synced state.
+  See [`skills/logos-node-fresh-sync-copy-state.md`](skills/logos-node-fresh-sync-copy-state.md).
+- **Node panics the first time it wins a slot, or wallet dies after a fast restart** →
+  see [`skills/logos-node-circuits-and-wallet-pitfalls.md`](skills/logos-node-circuits-and-wallet-pitfalls.md).
 
 ## Rules
 
