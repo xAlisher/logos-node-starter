@@ -12,6 +12,24 @@ Wallapop: <https://es.wallapop.com/item/ordenador-dell-optiplex-3050-ssd-500gb-i
 If any step feels complex or hard to understand, please **[file an issue](../../issues)** — that
 feedback is how the guide gets smoother for the next person.
 
+## ✅ Before you start — make sure you have
+
+> - [ ] **A machine that meets the requirements** — x86-64, **≥4 GB RAM, ≥120 GB disk** (tested on a
+>       Dell Optiplex 3050 / i5-7500 / 8 GB / 500 GB SSD; weaker is untested).
+> - [ ] **A USB stick (≥8 GB)** flashed with **Ubuntu Server 24.04 LTS**
+>       — [download the ISO](https://ubuntu.com/download/server), then flash it with
+>       [balenaEtcher](https://etcher.balena.io/) (easiest, Win/Mac/Linux) or
+>       [Rufus](https://rufus.ie/) (Windows). The stick gets erased.
+> - [ ] **An Ethernet cable** from the machine to your router (wired is simpler than WiFi).
+> - [ ] **A GitHub account** — the installer imports your SSH keys from it so you can log in without
+>       passwords. No keys yet? `ssh-keygen -t ed25519`, then add the `.pub` to GitHub → SSH keys.
+> - [ ] **A Tailscale account** (Google/Apple/GitHub login is fine), *or* an invite to someone's
+>       existing tailnet — for remote + phone access.
+> - [ ] **An Anthropic account** *(optional)* — only if you want Claude Code on the box (Phase 06).
+> - [ ] **About one evening**, and the OK to **erase whatever is currently on the machine**.
+
+Full details in [`docs/00-before-you-start.md`](docs/00-before-you-start.md).
+
 ## What you get
 
 - A minimal headless **Ubuntu Server** box, reachable by SSH.
