@@ -24,6 +24,14 @@ slower and never reaches the live tip. Symptoms: public bootstrap host serves a 
 the stream (`sending stopped by peer: error 0`); even adding one healthy peer doesn't fix it
 (internal `BlockProvider(RecvError(()))`).
 
+## The real fix: don't run IBD
+
+IBD has been broken on this testnet since ~mid-May. The upstream-recommended fix is to `init` with
+**peerless** bootstrap multiaddrs (omit `/p2p/<peerid>`) → `ibd.peers: []` → IBD off; the node then
+syncs via normal online sync. **The copy-state recipe below is an optional speed-up** (instant
+Online) or a rescue if online sync stalls — not the primary fix. (We hit AllPeersFailed only because
+an old community runbook config supplied peerids.)
+
 ## Recipe — copy the synced chain DB from a healthy canonical node
 
 Only valid if the donor is on the **canonical** chain. You copy *chain data* but keep *your own*

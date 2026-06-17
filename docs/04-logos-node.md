@@ -28,20 +28,29 @@ This lands `artifacts/node/logos-blockchain-node` and
 `artifacts/circuits/logos-blockchain-circuits-v0.4.2-linux-x86_64/` (containing `poc pol poq prover
 verifier VERSION zksign`). If you already have a machine with them, `rsync` works too.
 
-## 2. Mint the operator's OWN identity
+## 2. Mint the operator's OWN identity (IBD disabled)
 
 The binary generates a fresh config with brand-new keys — its own `node_key`, `funding_pk`
-(wallet), and consensus keys. Pass the testnet's bootstrap peers and the HTTP listen address:
+(wallet), and consensus keys. Pass the testnet's bootstrap peers as **plain multiaddrs — no
+`/p2p/<peerid>`** — and the HTTP listen address:
 
 ```bash
 ./artifacts/node/logos-blockchain-node init \
-  -p /ip4/65.109.51.37/udp/3000/quic-v1/p2p/12D3KooWFrouXfmrR4nsLMtE7wu15DoMJ6VtoUtHinREZCvbWHar \
-     /ip4/65.109.51.37/udp/3001/quic-v1/p2p/12D3KooWJRGau8M1rjT7R5e4YYsgdFhsMX35nRDtMwCDjxQkXAHz \
-     /ip4/65.109.51.37/udp/3002/quic-v1/p2p/12D3KooWQXJavMDTRscjauFSgVAB1VLB6Rzpy2uY5SU9Tk7927tb \
-     /ip4/65.109.51.37/udp/3003/quic-v1/p2p/12D3KooWSQc7CcGtvWDPF1yCbBthFnQjprfCVHmfmNDUrSmqQsU1 \
+  -p /ip4/65.109.51.37/udp/3000/quic-v1 \
+     /ip4/65.109.51.37/udp/3001/quic-v1 \
+     /ip4/65.109.51.37/udp/3002/quic-v1 \
+     /ip4/65.109.51.37/udp/3003/quic-v1 \
   -o configs/live/node.yaml --http-addr 127.0.0.1:8080
 ./artifacts/node/logos-blockchain-node --check-config configs/live/node.yaml   # → "Configs are valid!"
 ```
+
+> **⚠️ Leave the `/p2p/<peerid>` OFF.** Per the Logos devs, the peerids are exactly what enable
+> **IBD** (the bulk Initial Block Download) — and IBD has been failing on this testnet since
+> ~mid-May. Multiaddrs *with* peerids → IBD on (broken, `AllPeersFailed` crash loop); *without* →
+> IBD off, and the node syncs via normal online sync. The official v0.1.2 release notes correctly use
+> this peerless form — we originally tripped by copying an *older community runbook* config whose
+> multiaddrs still included peerids. Confirm it's off:
+> `grep -A1 "ibd:" configs/live/node.yaml` → should read `peers: []`.
 
 Note the operator's wallet key: `grep funding_pk configs/live/node.yaml`. **This is their identity
 — keep `node.yaml` private (it holds secret keys); never commit it.**
@@ -60,49 +69,28 @@ systemctl --user daemon-reload
 systemctl --user enable --now logos-node
 ```
 
-## 4. Sync the chain — the real wall, and the reliable fix
+## 4. Sync the chain
 
-A fresh node must do an **Initial Block Download (IBD)**. On a large testnet (this one was ~288k
-blocks) IBD from the public bootstrap host is **unreliable**: it serves a chunk, drops the stream
-(`sending stopped by peer`), and the node exits with `Initial Block Download failed:
-AllPeersFailed`, then crash-loops (each restart re-replays all stored blocks). We confirmed this is
-not fixed merely by adding one more peer.
+Because IBD is disabled (step 2), the node connects to the bootstrap peers and **syncs the chain via
+normal online sync** — skipping the broken bulk download entirely. Just start it (step 3) and let it
+run; mode goes `Bootstrapping` → `Online` with height climbing.
 
-**Recommended fix — install a synced chain snapshot (one command):**
+A fresh online sync can take a while. **To be Online in seconds instead, install a synced chain
+snapshot** (optional speed-up):
 
 ```bash
 systemctl --user stop logos-node
-~/logos-node-starter/scripts/fetch-snapshot.sh    # downloads, checksum-verifies, installs into state/
+~/logos-node-starter/scripts/fetch-snapshot.sh    # downloads + checksum-verifies, installs into state/
 systemctl --user start logos-node
 ```
 
-The recovery snapshot lets the node **jump straight to the tip — Online in seconds**, then it tracks
-the live tip via normal gossip. (Read the README's trust/freshness note on what you're trusting.)
+(See the README's trust/freshness note on what the snapshot trusts. If you already run your own
+synced node, you can instead copy its `state/db` + `state/recovery`, keeping your own `node.yaml`.)
 
-**Alternative — copy from your OWN trusted synced node** (only if you already run one on the
-canonical chain). Copy *chain data* but keep *your own* `node.yaml`/`node_key` (no identity
-collision). ⚠️ **this erases your current chain state:**
-
-```bash
-ssh <your-synced-node> 'systemctl --user stop logos-node'
-systemctl --user stop logos-node
-rm -rf ~/logos-blockchain-runbook/state/db ~/logos-blockchain-runbook/state/recovery   # only chain data
-
-# stream db+recovery node-to-node, skipping logs/backups:
-ssh <your-synced-node> 'cd ~/logos-blockchain-runbook/state/<donor-base> && tar c --exclude=logs --exclude="*.bak*" db recovery' \
-  | (cd ~/logos-blockchain-runbook/state && tar x)
-
-ssh <your-synced-node> 'systemctl --user start logos-node'   # restart the donor immediately
-systemctl --user start logos-node
-```
-
-`<donor-base>` is the donor's state `base_folder` (`.` if it uses `./state`; `live-v0.1.2` on older
-nodes). **A node from this guide uses `./state`** — so its db/recovery live at `state/db` and
-`state/recovery`. Only `db/` + `recovery/` are needed (~600 MB); a wallet-key mismatch in copied
-state is harmless — the node syncs regardless.
-
-> No trusted node and the snapshot won't do? You're left with public IBD — add several *diverse,
-> currently-active* peers (not all one host) and expect a slow, flaky first sync.
+> **Why this changed:** the original build used the **peerid** form (IBD on) and hit `AllPeersFailed`
+> crash-loops — see [`EXPERIENCE.md`](EXPERIENCE.md) and upstream
+> [logos #2967](https://github.com/logos-blockchain/logos-blockchain/issues/2967). Peerless `init`
+> (IBD off) is the upstream-recommended fix.
 
 ## 5. Verify
 

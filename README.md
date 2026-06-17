@@ -111,11 +111,14 @@ your exact setup and how to fix it:
   crash loop automatically from the launcher.
 - [`logos-node-recovery`](skills/logos-node-recovery.md) — the general recovery procedure.
 
-## The hardest part, up front
+## First sync — disable IBD
 
-The node's **first sync** is the wall. On a large testnet, from-scratch Initial Block Download is
-unreliable. The fast, reliable path is `scripts/fetch-snapshot.sh` (or copying state from your own
-trusted synced node). Everything else went smoothly.
+The testnet's bulk **Initial Block Download (IBD) has been failing since ~mid-May**, so we `init`
+with **peerless** bootstrap multiaddrs (no `/p2p/<peerid>`) — that disables IBD, and the node syncs
+via normal online sync instead (confirm with `ibd.peers: []` in the config). For an instant start,
+`scripts/fetch-snapshot.sh` fast-forwards to Online. *(Our original build used peerids by mistake —
+from an old community runbook config — and hit the `AllPeersFailed` wall; see
+[`docs/EXPERIENCE.md`](docs/EXPERIENCE.md) and upstream [#2967](https://github.com/logos-blockchain/logos-blockchain/issues/2967).)*
 
 ### About the chain snapshot (trust & freshness)
 

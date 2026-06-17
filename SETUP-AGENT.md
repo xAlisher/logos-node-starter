@@ -41,8 +41,8 @@ Have a short conversation first and adapt everything to the answers:
    (Claude Code)?"** — sets expectations for Phases 03 and 06.
 
 Then set expectations out loud: ~1 evening of work; the trickiest moment is the disk step (you'll
-gut-check it together); the node's first sync uses a snapshot (`scripts/fetch-snapshot.sh`) because
-from-scratch sync on this testnet is unreliable.
+gut-check it together); the node syncs via online sync (we `init` with **peerless** multiaddrs to
+disable the broken IBD), and `scripts/fetch-snapshot.sh` is an optional fast-forward to Online.
 
 Hard rules:
 
@@ -65,7 +65,7 @@ Hard rules:
 | 1. Ubuntu install | `01` | the disk step (rule 3); enable OpenSSH + import their GitHub keys |
 | 2. Base setup | `02` | passwordless sudo needs their password once, at the console |
 | 3. Tailscale | `03` | the **fresh-account-makes-its-own-tailnet** trap — must accept an invite |
-| 4. Node | `04` | run `scripts/fetch-artifacts.sh`, `init` for their own keys, then **`scripts/fetch-snapshot.sh`** to skip the broken from-scratch sync |
+| 4. Node | `04` | `scripts/fetch-artifacts.sh`; `init` for their own keys with **peerless** multiaddrs (no `/p2p/` → disables broken IBD; verify `ibd.peers: []`); optionally `scripts/fetch-snapshot.sh` to fast-forward to Online |
 | 5. Dashboard | `05` | `tailscale serve` → give them the phone URL |
 | 6. Claude Code | `06` | their own Anthropic account |
 
@@ -76,8 +76,9 @@ Hard rules:
   `ssh-keygen -R <ip>`.
 - **"Tailscale VPN on" ≠ on the right tailnet.** Verify the account is a tailnet *member* from a
   second device (`docs/03`).
-- **Fresh node won't sync** (`AllPeersFailed`): don't fight it — use the snapshot
-  (`scripts/fetch-snapshot.sh`). Bulk IBD-from-scratch is unreliable on this testnet.
+- **Fresh node `AllPeersFailed` crash loop = IBD is ON.** IBD is broken on this testnet; `init` with
+  **peerless** multiaddrs (no `/p2p/<peerid>`) disables it — verify `ibd.peers: []` in node.yaml.
+  The snapshot (`scripts/fetch-snapshot.sh`) is an optional fast-forward, not the fix.
 - **Logs:** this node logs to stdout → `journalctl --user -u logos-node -f`.
 - **systemd user services** need `loginctl enable-linger <user>` or they die on logout.
 - **Confirm ports empirically.** Don't trust a port from notes; `curl` it.
