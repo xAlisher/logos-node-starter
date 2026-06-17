@@ -90,7 +90,7 @@ this repo — it will size up your experience and hardware, then walk you throug
 | Script | What it does |
 |---|---|
 | [`scripts/fetch-artifacts.sh`](scripts/fetch-artifacts.sh) | download node binary + circuits from the **official Logos release** (checksum-verified) |
-| [`scripts/fetch-snapshot.sh`](scripts/fetch-snapshot.sh) | install a synced chain snapshot so you skip the unreliable from-scratch sync |
+| [`scripts/fetch-snapshot.sh`](scripts/fetch-snapshot.sh) | optional: install a synced chain snapshot to fast-forward a fresh node to Online |
 | [`scripts/run-node.sh`](scripts/run-node.sh) | the node launcher (used by the systemd unit) |
 | [`scripts/healthcheck.sh`](scripts/healthcheck.sh) | one command that confirms node Online, dashboard up, services healthy |
 | [`scripts/publish-snapshot.sh`](scripts/publish-snapshot.sh) | maintainer: regenerate + publish the chain snapshot release |
@@ -101,8 +101,8 @@ this repo — it will size up your experience and hardware, then walk you throug
 (plus this build). [`CLAUDE.md`](CLAUDE.md) wires them into Claude Code so the on-box agent knows
 your exact setup and how to fix it:
 
-- [`logos-node-fresh-sync-copy-state`](skills/logos-node-fresh-sync-copy-state.md) — fresh-node IBD
-  fails (`AllPeersFailed`); bring it Online by copying synced state. Includes the peer-ID-from-key trick.
+- [`logos-node-fresh-sync-copy-state`](skills/logos-node-fresh-sync-copy-state.md) — disable the broken
+  IBD (peerless `init`); optionally copy synced state to fast-forward. Includes the peer-ID-from-key trick.
 - [`logos-node-circuits-and-wallet-pitfalls`](skills/logos-node-circuits-and-wallet-pitfalls.md) —
   node panics the first time it wins a slot (circuits symlink); wallet dies after a fast restart.
 - [`logos-node-crash-loop-tip-lib`](skills/logos-node-crash-loop-tip-lib.md) — dirty-shutdown
