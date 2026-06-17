@@ -37,6 +37,12 @@ Anything x86-64 with ≥4 GB RAM and ≥120 GB disk works. This guide was tested
 5. [`docs/05-dashboard.md`](docs/05-dashboard.md) — dashboard + phone access via Tailscale
 6. [`docs/06-claude-code.md`](docs/06-claude-code.md) — Claude Code + the skills bundle
 
+> **Reality check (from the real build):** the hardest part is the node's first sync. On a large
+> testnet, Initial Block Download from the public bootstrap host is unreliable. The fast, reliable
+> path is to **copy the synced chain DB from a healthy node you trust** (details in `04`). Without
+> one, expect a slow, flaky first sync. Everything else went smoothly — see
+> [`docs/EXPERIENCE.md`](docs/EXPERIENCE.md).
+
 ## The self-troubleshooting kit
 
 [`skills/`](skills/) holds battle-tested recipes for the failure modes this node actually hits

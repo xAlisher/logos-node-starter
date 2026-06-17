@@ -1,10 +1,44 @@
 # 02 — Base setup (over SSH)
 
-_Filled in live during the build. Outline:_
+**Who:** the mentor, from a laptop. ~5 minutes.
+After Phase 01, the operator's imported GitHub keys let you log in with no password.
 
-1. First SSH in: `ssh <user>@<ip>` (keys imported during install — no password).
-2. Passwordless sudo (optional, convenience): `echo "<user> ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/<user>`
-3. Timezone: `sudo timedatectl set-timezone Europe/Madrid`
-4. Update: `sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y`
-5. Essentials: `sudo apt install -y tmux git curl python3 python3-venv`
-6. Confirm hostname is `optiplex`: `hostnamectl` (set with `sudo hostnamectl set-hostname optiplex` if not).
+## Connect
+
+```bash
+ssh <user>@<ip>      # e.g. ssh dar@192.168.1.47
+```
+
+### If the connection fails — two snags we actually hit
+
+- **`No route to host` / can't even ping the box.** Many home routers enable **WiFi client
+  isolation**, so a mentor laptop on WiFi can't reach a wired server. Fix: put the mentor machine
+  on the **same wired network**, or skip ahead and install Tailscale *at the console* (`03`) and
+  connect over that instead.
+- **`REMOTE HOST IDENTIFICATION HAS CHANGED`.** The DHCP IP was used by a different machine before.
+  Harmless on a fresh install — clear the stale key and reconnect:
+  ```bash
+  ssh-keygen -R <ip> && ssh <user>@<ip>
+  ```
+
+## Make admin painless (one command, at the console)
+
+`sudo` needs a password, which blocks remote automation. Have the operator run this **once at the
+keyboard** (the only thing that needs their password):
+
+```bash
+echo "<user> ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/<user>
+```
+
+## The rest (over SSH)
+
+```bash
+sudo timedatectl set-timezone Europe/Madrid          # your zone
+sudo apt-get update && sudo apt-get upgrade -y
+sudo apt-get install -y tmux git curl python3 python3-venv
+hostnamectl                                          # confirm hostname == optiplex
+```
+
+`tmux` matters: long-running things (and shared support sessions) survive an SSH disconnect.
+
+→ continue with [`03-tailscale.md`](03-tailscale.md).
