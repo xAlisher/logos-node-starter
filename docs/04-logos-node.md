@@ -14,16 +14,19 @@ cd ~/logos-blockchain-runbook
 mkdir -p artifacts/node artifacts/circuits configs/live
 ```
 
-Put the matching `logos-blockchain-node` binary in `artifacts/node/` and the circuits dir
-(`logos-blockchain-circuits-v0.4.2-linux-x86_64/`, containing `poc pol poq prover verifier
-VERSION zksign`) in `artifacts/circuits/`. We copied known-good ones from an existing machine over
-the LAN with `rsync` — fastest and guaranteed-compatible:
+Fetch the node binary + circuits straight from the **official Logos release** (pinned to 0.1.2,
+checksum-verified):
 
 ```bash
-# from the machine that has them:
-rsync -a artifacts/node/logos-blockchain-node       <user>@<node>:~/logos-blockchain-runbook/artifacts/node/
-rsync -a artifacts/circuits/logos-blockchain-circuits-v0.4.2-linux-x86_64 <user>@<node>:~/logos-blockchain-runbook/artifacts/circuits/
+# clone this starter repo somewhere too, then:
+~/logos-node-starter/scripts/fetch-artifacts.sh
+# downloads from github.com/logos-blockchain/logos-blockchain/releases/0.1.2,
+# verifies SHA256, extracts into artifacts/node + artifacts/circuits.
 ```
+
+This lands `artifacts/node/logos-blockchain-node` and
+`artifacts/circuits/logos-blockchain-circuits-v0.4.2-linux-x86_64/` (containing `poc pol poq prover
+verifier VERSION zksign`). If you already have a machine with them, `rsync` works too.
 
 ## 2. Mint the operator's OWN identity
 

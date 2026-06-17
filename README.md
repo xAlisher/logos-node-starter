@@ -28,14 +28,31 @@ Anything x86-64 with ≥4 GB RAM and ≥120 GB disk works. This guide was tested
 | Disk | 500 GB SSD |
 | GPU | none needed — this is a node, not an LLM box |
 
+## Recommended: do it with an AI agent (like the original build)
+
+The first build went smoothly because a beginner had a live AI agent guiding every step. **You can
+have the same** — see [`SETUP-AGENT.md`](SETUP-AGENT.md). Point Claude Code (or any agent) at this
+repo and say *"walk me through setting up my Logos node, one step at a time."*
+
 ## The guide, in order
 
+0. [`docs/00-before-you-start.md`](docs/00-before-you-start.md) — shopping list + accounts + install USB
 1. [`docs/01-ubuntu-install.md`](docs/01-ubuntu-install.md) — install minimal Ubuntu Server (you, at the machine)
 2. [`docs/02-base-setup.md`](docs/02-base-setup.md) — hostname, sudo, updates, tmux (over SSH)
 3. [`docs/03-tailscale.md`](docs/03-tailscale.md) — join your tailnet, reach it from anywhere
 4. [`docs/04-logos-node.md`](docs/04-logos-node.md) — install + run the node (own wallet)
 5. [`docs/05-dashboard.md`](docs/05-dashboard.md) — dashboard + phone access via Tailscale
 6. [`docs/06-claude-code.md`](docs/06-claude-code.md) — Claude Code + the skills bundle
+
+## Helper scripts
+
+| Script | What it does |
+|---|---|
+| [`scripts/fetch-artifacts.sh`](scripts/fetch-artifacts.sh) | download the node binary + circuits from the **official Logos release** (checksum-verified) |
+| [`scripts/fetch-snapshot.sh`](scripts/fetch-snapshot.sh) | install a synced chain snapshot so you skip the unreliable from-scratch sync |
+| [`scripts/run-node.sh`](scripts/run-node.sh) | the node launcher (used by the systemd unit) |
+| [`scripts/healthcheck.sh`](scripts/healthcheck.sh) | one command that confirms node Online, dashboard up, services healthy |
+| [`scripts/publish-snapshot.sh`](scripts/publish-snapshot.sh) | maintainer: regenerate + publish the chain snapshot release |
 
 > **Reality check (from the real build):** the hardest part is the node's first sync. On a large
 > testnet, Initial Block Download from the public bootstrap host is unreliable. The fast, reliable
