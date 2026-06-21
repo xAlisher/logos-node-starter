@@ -42,6 +42,9 @@ journalctl --user -u logos-node -f
   See [`skills/logos-node-fresh-sync-copy-state.md`](skills/logos-node-fresh-sync-copy-state.md).
 - **Node panics the first time it wins a slot, or wallet dies after a fast restart** →
   see [`skills/logos-node-circuits-and-wallet-pitfalls.md`](skills/logos-node-circuits-and-wallet-pitfalls.md).
+- **"Is my node actually proposing / winning slots?" (and do blocks land in-chain?)** →
+  see [`skills/logos-node-verify-proposals.md`](skills/logos-node-verify-proposals.md). Note the log
+  phrase is `proposed block with id` and on this kit it's in **journald**, not a log file.
 
 ## Rules
 
