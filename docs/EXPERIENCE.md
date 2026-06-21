@@ -190,7 +190,22 @@ assumes you can copy state from an already-synced node. Without one, you're at t
 IBD, which on this testnet is currently unreliable from a single host — add several diverse,
 currently-active peers and expect a slow, flaky first sync.
 
+### Phase 7 — Dariy's seat + the first real power cut (2026-06-21)
+- **Dariy logged Claude Code into his own account** (Claude Pro) on optiplex, driven over SSH
+  via a tmux-held login; gave him a lean, beginner-tuned `~/.claude/` (teaching-stance
+  `CLAUDE.md` + `check-node` / `learned` skills) instead of the full mentor toolkit. Phone
+  access is a-Shell (iOS) → SSH key → a persistent `claude-session` tmux helper.
+- **First power cut hit, and the node crash-looped** — the documented orphan-tip panic
+  (`Could not retrieve block parent … during recovery`, upstream #2569). Fixed live with the
+  `tip = lib` rollback; node recovered to Online without a resync.
+- **Root cause of the pain: the self-heal guard had never been installed here**, and the recipe
+  as written wouldn't have worked anyway — it tails a *log file*, but this kit logs to
+  **journald**. Ported a journald-aware (file-fallback) guard into `run-node.sh`, and it now
+  **ships in `scripts/run-node.sh` by default** so future installs self-heal out of the box.
+  Verified: trigger regex matches the real panic, rollback logic passes orphan/idempotent/bail
+  cases, and a healthy restart is a clean no-op (tip preserved).
+
 ### Still open (next session)
-- Dariy logs Claude Code into his account.
-- Optional hardening: port the dirty-shutdown **auto-rollback guard** into this box's `run-node.sh`
-  (adapted to its `./state` layout) so a power loss self-heals without manual recovery.
+- **Firmware auto-power-on:** confirm BIOS *AC Recovery* = "Power On" so the box reboots itself
+  when wall power returns (can't be read/set from the OS without root; needs an F2 BIOS visit).
+  Until then, OS + node self-heal is complete but the machine still needs power restored to it.
